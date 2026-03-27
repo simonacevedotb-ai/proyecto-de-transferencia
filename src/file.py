@@ -1,0 +1,1 @@
+# Módulo de persistencia — lectura/escritura de records.json

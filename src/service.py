@@ -1,0 +1,1 @@
+# Módulo 1 — lógica de negocio (CRUD de productos)
