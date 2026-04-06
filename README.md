@@ -40,5 +40,5 @@ proyecto-de-transferencia/
 
 | Módulo | Tag | Estado |
 |---|---|---|
-| M0 — Estructura del repositorio | `m0-setup` | ✅ |
-| M1 — Estructuras de datos y validaciones | `m1-data` | 🔜 |
+| M0 — Estructura del repositorio | `m0-setup` |  |
+| M1 — Estructuras de datos y validaciones | `m1-data` |  |
