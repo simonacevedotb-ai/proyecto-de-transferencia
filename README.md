@@ -8,7 +8,7 @@ Sistema CRUD en consola para gestionar productos, con persistencia en JSON y có
 - Instalar dependencias:
 
 ```bash
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 ## Cómo ejecutar
