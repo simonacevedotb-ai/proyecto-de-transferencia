@@ -1,5 +1,6 @@
 from colorama import init, Fore, Style
 from service import new_register, list_records, search_record, update_record, delete_record
+from integration import cargar_productos_faker
 
 init(autoreset=True)
 
@@ -9,10 +10,10 @@ def titulo(texto: str) -> None:
     print(f"{'='*45}{Style.RESET_ALL}")
 
 def exito(texto: str) -> None:
-    print(f"{Fore.GREEN}   {texto}{Style.RESET_ALL}")
+    print(f"{Fore.GREEN}  ✅ {texto}{Style.RESET_ALL}")
 
 def error(texto: str) -> None:
-    print(f"{Fore.RED}   {texto}{Style.RESET_ALL}")
+    print(f"{Fore.RED}  ❌ {texto}{Style.RESET_ALL}")
 
 def advertencia(texto: str) -> None:
     print(f"{Fore.YELLOW}  ⚠ {texto}{Style.RESET_ALL}")
@@ -22,8 +23,8 @@ def pedir_input(etiqueta: str) -> str:
 
 def mostrar_producto(p: dict) -> None:
     print(f"  {Fore.CYAN}[{p['id']}]{Style.RESET_ALL} {p['nombre']} | "
-        f"{Fore.GREEN}${p['precio']:,.0f}{Style.RESET_ALL} | "
-        f"Stock: {p['cantidad']} | {Fore.YELLOW}{p['categoria']}{Style.RESET_ALL}")
+          f"{Fore.GREEN}${p['precio']:,.0f}{Style.RESET_ALL} | "
+          f"Stock: {p['cantidad']} | {Fore.YELLOW}{p['categoria']}{Style.RESET_ALL}")
 
 # ── Opciones del menú ──────────────────────────────────────
 
@@ -45,8 +46,8 @@ def opcion_crear():
 def opcion_listar():
     titulo("LISTAR PRODUCTOS")
     print(f"  Ordenar por: {Fore.CYAN}1{Style.RESET_ALL}) Precio  "
-        f"{Fore.CYAN}2{Style.RESET_ALL}) Nombre  "
-        f"{Fore.CYAN}3{Style.RESET_ALL}) Sin orden")
+          f"{Fore.CYAN}2{Style.RESET_ALL}) Nombre  "
+          f"{Fore.CYAN}3{Style.RESET_ALL}) Sin orden")
     opcion = pedir_input("Opción")
     orden = {"1": "precio", "2": "nombre"}.get(opcion, None)
     productos = list_records(orden=orden)
@@ -119,30 +120,51 @@ def opcion_eliminar():
     except Exception as e:
         error(f"Error inesperado: {e}")
 
+def opcion_faker():
+    titulo("GENERAR PRODUCTOS CON FAKER")
+    try:
+        cantidad = pedir_input("¿Cuántos productos quieres generar?")
+        cantidad = int(cantidad)
+        if cantidad <= 0:
+            advertencia("Ingresa un número mayor a 0.")
+            return
+        creados = cargar_productos_faker(cantidad)
+        if creados:
+            exito(f"{len(creados)} productos generados:")
+            for p in creados:
+                mostrar_producto(p)
+        else:
+            advertencia("No se pudieron generar productos (IDs duplicados).")
+    except ValueError:
+        error("Debes ingresar un número entero.")
+    except Exception as e:
+        error(f"Error inesperado: {e}")
+
 # ── Menú principal ─────────────────────────────────────────
 
 def mostrar_menu():
     opciones = {
-        "1": ("Crear producto",      opcion_crear),
-        "2": ("Listar productos",    opcion_listar),
-        "3": ("Buscar producto",     opcion_buscar),
-        "4": ("Actualizar producto", opcion_actualizar),
-        "5": ("Eliminar producto",   opcion_eliminar),
-        "6": ("Salir",               None),
+        "1": ("Crear producto",           opcion_crear),
+        "2": ("Listar productos",         opcion_listar),
+        "3": ("Buscar producto",          opcion_buscar),
+        "4": ("Actualizar producto",      opcion_actualizar),
+        "5": ("Eliminar producto",        opcion_eliminar),
+        "6": ("Generar productos (Faker)", opcion_faker),
+        "7": ("Salir",                    None),
     }
 
     while True:
         titulo("SISTEMA DE GESTIÓN DE INVENTARIO")
         for clave, (descripcion, _) in opciones.items():
-            color = Fore.RED if clave == "6" else Fore.CYAN
+            color = Fore.RED if clave == "7" else Fore.CYAN
             print(f"  {color}[{clave}]{Style.RESET_ALL} {descripcion}")
 
         opcion = pedir_input("\nElige una opción")
 
-        if opcion == "6":
+        if opcion == "7":
             print(f"\n{Fore.YELLOW}  Hasta luego {Style.RESET_ALL}\n")
             break
         elif opcion in opciones:
             opciones[opcion][1]()
         else:
-            error("Opción no válida. Elige entre 1 y 6.")
+            error("Opción no válida. Elige entre 1 y 7.")
